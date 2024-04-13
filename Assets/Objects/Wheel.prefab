@@ -1909,7 +1909,7 @@ MonoBehaviour:
   breakActions:
   - BreakLeft
   - BreakRight
-  breakStrength: 100
+  breakStrength: 15
   rotator: {fileID: 0}
 --- !u!114 &5519513069363376976
 MonoBehaviour:
