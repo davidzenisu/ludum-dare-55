@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,37 +15,38 @@ public class Rotator : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _stopwatch.Restart();
-        //Spin(maxRotationSpeed);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (IsStopped())
+        if (IsStopped() && _stopwatch.IsRunning && _stopwatch.ElapsedMilliseconds > 1000)
         {
             UnityEngine.Debug.Log($"Wheel stopped after: {_stopwatch.ElapsedMilliseconds}ms");
             _stopwatch.Stop();
         }
-        BreakControl();
-    }
-
-    void BreakControl()
-    {
-
     }
 
     bool IsStopped()
     {
-        return _rigidbody.angularVelocity <= 1 && _stopwatch.IsRunning && _stopwatch.ElapsedMilliseconds > 1000;
+        return _rigidbody.angularVelocity <= 0;
     }
 
-    void Break(int breakForce)
+    public void Break(int breakForce)
     {
+        if (IsStopped())
+        {
+            return;
+        }
         _rigidbody.AddTorque(breakForce * -1);
     }
 
-    void Spin(int force)
+    public void Spin(int force)
     {
-        _rigidbody.AddTorque(force);
+        if (!IsStopped())
+        {
+            return;
+        }
+        _rigidbody.AddTorque(Math.Min(force, maxRotationSpeed));
     }
 }
