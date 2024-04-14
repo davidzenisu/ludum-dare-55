@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
@@ -12,6 +13,8 @@ public class WheelController : MonoBehaviour
     public GameObject wheel;
     public GameObject gameZone;
     public PentagramSpawn[] pentagramPositions;
+    public GameObject closedBook;
+    public GameObject openBook;
     private PentagramMonitor[] pentagramMonitors = new PentagramMonitor[0];
     public static WheelController Instance { get; private set; }
     public int totalGameLengthSeconds;
@@ -22,6 +25,8 @@ public class WheelController : MonoBehaviour
 
     private Timer _timer;
     private Score _scoreBoard;
+    private SpinControl _spinControl;
+
     private bool _isGameRunning;
 
     class PentagramMonitor
@@ -45,6 +50,21 @@ public class WheelController : MonoBehaviour
         _timer = FindAnyObjectByType<Timer>();
         _scoreBoard = FindAnyObjectByType<Score>();
         startMenu?.SetActive(true);
+        _spinControl = FindAnyObjectByType<SpinControl>();
+    }
+
+    private void Update()
+    {
+        ValidateBook();
+        if (!_isGameRunning)
+        {
+            return;
+        }
+        if (_targetWheelRotator)
+        {
+            _targetWheelLight?.gameObject.SetActive(!_targetWheelRotator.IsSpinning());
+        }
+        ValidateTimer();
     }
 
     private void CreatePentagramMonitors()
@@ -70,19 +90,6 @@ public class WheelController : MonoBehaviour
         {
             Camera.main.gameObject.AddComponent<Physics2DRaycaster>();
         }
-    }
-
-    private void Update()
-    {
-        if (!_isGameRunning)
-        {
-            return;
-        }
-        if (_targetWheelRotator)
-        {
-            _targetWheelLight?.gameObject.SetActive(!_targetWheelRotator.IsSpinning());
-        }
-        ValidateTimer();
     }
 
     public GameObject GetTargetWheel()
@@ -135,6 +142,17 @@ public class WheelController : MonoBehaviour
         Time.timeScale = 0f;
         _isGameRunning = false;
         endMenu?.SetActive(true);
+    }
+
+    private void ValidateBook()
+    {
+        var isBookOpened = _isGameRunning &&
+            _spinControl.SpinButtonsPressed() &&
+            _targetWheel != null &&
+            !_targetWheelRotator.IsSpinning();
+        //_targetWheel != null && !_targetWheelRotator.IsSpinning() ??
+        openBook.SetActive(isBookOpened);
+        closedBook.SetActive(!isBookOpened);
     }
 
     private void ValidateTimer()
