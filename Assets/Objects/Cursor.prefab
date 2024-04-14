@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1707725041772154003}
   - component: {fileID: 8596076166290065730}
   - component: {fileID: 4476601745958530066}
+  - component: {fileID: 3763021212514096892}
   m_Layer: 5
   m_Name: Cursor
   m_TagString: Untagged
@@ -118,7 +119,7 @@ MonoBehaviour:
       m_Flags: 0
     m_Reference: {fileID: -1680190386980627800, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
   m_LeftButtonAction:
-    m_UseReference: 0
+    m_UseReference: 1
     m_Action:
       m_Name: Left Button
       m_Type: 0
@@ -126,9 +127,17 @@ MonoBehaviour:
       m_Id: 02992d56-d555-42cc-bc08-8cceb4b05300
       m_Processors: 
       m_Interactions: 
-      m_SingletonActionBindings: []
+      m_SingletonActionBindings:
+      - m_Name: 
+        m_Id: 6b3f56f2-1988-43b7-aed8-32f78bc78be6
+        m_Path: 
+        m_Interactions: 
+        m_Processors: 
+        m_Groups: 
+        m_Action: Left Button
+        m_Flags: 0
       m_Flags: 0
-    m_Reference: {fileID: 0}
+    m_Reference: {fileID: 392368643174621059, guid: 3590b91b4603b465dbb4216d601bff33, type: 3}
   m_MiddleButtonAction:
     m_UseReference: 0
     m_Action:
@@ -245,3 +254,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 242f57257ddab1546b29ee0d74d6551d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totalGameLengthSeconds: 90
+--- !u!114 &3763021212514096892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4335118781390262679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a77415ce533f42bdd6eaf52516b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pauseAction: Pause

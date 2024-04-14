@@ -65,4 +65,9 @@ public class Rotator : MonoBehaviour
     {
         _currentScore = score;
     }
+
+    public bool IsSpinning()
+    {
+        return _currentlySpinning;
+    }
 }
