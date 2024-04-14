@@ -41,7 +41,7 @@ public class Rotator : MonoBehaviour
         _rigidbody.AddTorque(breakForce * -1);
     }
 
-    public void Spin(int force)
+    public void Spin(float force)
     {
         if (!IsStopped())
         {
