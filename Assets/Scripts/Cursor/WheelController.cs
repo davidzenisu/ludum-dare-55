@@ -5,7 +5,12 @@ using UnityEngine.Rendering.Universal;
 public class WheelController : MonoBehaviour
 {
     public static WheelController Instance { get; private set; }
+    public int totalGameLengthSeconds;
     private GameObject _targetWheel;
+    private int _totalScore;
+
+    private Timer _timer;
+    private Score _scoreBoard;
 
     private void Awake()
     {
@@ -20,6 +25,9 @@ public class WheelController : MonoBehaviour
             Instance = this;
         }
         addPhysicsRaycaster();
+        _timer = FindAnyObjectByType<Timer>();
+        _scoreBoard = FindAnyObjectByType<Score>();
+        _timer?.StartTimer(totalGameLengthSeconds);
     }
 
     private void addPhysicsRaycaster()
@@ -51,5 +59,11 @@ public class WheelController : MonoBehaviour
     public Rotator GetWheelRotator()
     {
         return GetTargetWheel()?.GetComponentInChildren<Rotator>();
+    }
+
+    public void AddScore(int addedScore)
+    {
+        _totalScore += addedScore;
+        _scoreBoard?.SetScore(_totalScore);
     }
 }

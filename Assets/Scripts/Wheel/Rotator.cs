@@ -9,32 +9,41 @@ public class Rotator : MonoBehaviour
     private Rigidbody2D _rigidbody;
 
     private Stopwatch _stopwatch = new Stopwatch();
+    private int _currentScore;
+    private bool _currentlySpinning;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void OnEnable()
+    void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
-        _stopwatch.Restart();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (IsStopped() && _stopwatch.IsRunning && _stopwatch.ElapsedMilliseconds > 1000)
+        if (IsMoving() && _stopwatch.IsRunning && _stopwatch.ElapsedMilliseconds > 1000)
         {
-            UnityEngine.Debug.Log($"Wheel stopped after: {_stopwatch.ElapsedMilliseconds}ms");
-            _stopwatch.Stop();
+            StopSpin();
         }
     }
 
-    bool IsStopped()
+    bool IsMoving()
     {
-        return _rigidbody.angularVelocity <= 0;
+        return _rigidbody.angularVelocity <= 2f;
+    }
+
+    private void StopSpin()
+    {
+        UnityEngine.Debug.Log($"Wheel stopped after: {_stopwatch.ElapsedMilliseconds}ms");
+        _stopwatch.Stop();
+        UnityEngine.Debug.Log($"Adding {_currentScore} points");
+        _currentlySpinning = false;
+        WheelController.Instance.AddScore(_currentScore);
     }
 
     public void Break(int breakForce)
     {
-        if (IsStopped())
+        if (!_currentlySpinning)
         {
             return;
         }
@@ -43,10 +52,17 @@ public class Rotator : MonoBehaviour
 
     public void Spin(float force)
     {
-        if (!IsStopped())
+        if (_currentlySpinning)
         {
             return;
         }
+        _currentlySpinning = true;
+        _stopwatch.Restart();
         _rigidbody.AddTorque(Math.Min(force, maxRotationSpeed));
+    }
+
+    public void SetScore(int score)
+    {
+        _currentScore = score;
     }
 }
