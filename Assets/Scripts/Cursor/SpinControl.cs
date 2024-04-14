@@ -16,7 +16,6 @@ public class SpinControl : MonoBehaviour
     public string spinActionStick;
     private InputAction _spinInputStick;
     public int totalSpinStrength;
-    public Rotator rotator;
     private SpinCalculation _spinCalculation;
 
     // spin calculations
@@ -88,10 +87,6 @@ public class SpinControl : MonoBehaviour
 
     void Start()
     {
-        if (!rotator)
-        {
-            rotator = GetComponent<Rotator>();
-        }
         _spinInputButtons = spinActionButtons
             .Select(a => InputSystem.actions.FindAction(a))
             .Where(a => a != null)
@@ -118,7 +113,11 @@ public class SpinControl : MonoBehaviour
             {
                 Debug.Log("Completing spin");
                 var spinStrength = EvaluateSpin(spinDuration, spinAngle);
-                Spin(spinStrength);
+                var wheelRotator = WheelController.Instance.GetWheelRotator();
+                if (wheelRotator != null)
+                {
+                    Spin(wheelRotator, spinStrength);
+                }
             }
             _spinCalculation = new SpinCalculation();
         }
@@ -128,7 +127,7 @@ public class SpinControl : MonoBehaviour
     {
         var currentlySpinning = _spinCalculation.IsSpinning();
         // To spin, all spin buttons should be pressed
-        if (_spinInputButtons.Any(a => !a.IsPressed()))
+        if (!SpinButtonsPressed())
         {
             if (currentlySpinning)
             {
@@ -163,8 +162,13 @@ public class SpinControl : MonoBehaviour
         return totalSpinStrength * spinDurationFactor * spinAngleFactor;
     }
 
-    void Spin(float spinStrength)
+    void Spin(Rotator rotator, float spinStrength)
     {
         rotator.Spin(spinStrength);
+    }
+
+    public bool SpinButtonsPressed()
+    {
+        return !_spinInputButtons.Any(a => !a.IsPressed());
     }
 }

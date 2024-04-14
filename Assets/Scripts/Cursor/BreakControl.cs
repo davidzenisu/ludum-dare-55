@@ -6,16 +6,11 @@ public class BreakControl : MonoBehaviour
 {
     public string[] breakActions;
     public int breakStrength;
-    public Rotator rotator;
     private InputAction[] breakInputActions;
 
 
     void Start()
     {
-        if (!rotator)
-        {
-            rotator = GetComponent<Rotator>();
-        }
         breakInputActions = breakActions
             .Select(a => InputSystem.actions.FindAction(a))
             .Where(a => a != null)
@@ -24,14 +19,21 @@ public class BreakControl : MonoBehaviour
 
     void Update()
     {
-        if (breakInputActions.Any(a => a.IsPressed()))
+        if (!breakInputActions.Any(a => a.IsPressed()))
         {
-            Break();
+            return;
         }
+        var wheelRotator = WheelController.Instance.GetWheelRotator();
+        if (wheelRotator == null)
+        {
+            return;
+        }
+        Break(wheelRotator);
     }
 
-    void Break()
+    void Break(Rotator rotator)
     {
+
         var combinedBreakStrength = breakInputActions.Sum(a => a.IsPressed() ? breakStrength : 0);
         rotator.Break(combinedBreakStrength);
     }

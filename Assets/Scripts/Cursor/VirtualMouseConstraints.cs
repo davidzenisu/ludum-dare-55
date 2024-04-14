@@ -1,14 +1,25 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.InputSystem.UI;
 
 public class VirutalMouseConstraints : MonoBehaviour
 {
+
     private VirtualMouseInput _virtualMouseInput;
+    private SpinControl _spinControl;
+    private float _cursorSpeed;
 
     private void Awake()
     {
         _virtualMouseInput = GetComponent<VirtualMouseInput>();
+        _cursorSpeed = _virtualMouseInput.cursorSpeed;
+        _spinControl = FindAnyObjectByType<SpinControl>();
+    }
+
+    private void Update()
+    {
+        _virtualMouseInput.cursorSpeed = _spinControl.SpinButtonsPressed() ? 0 : _cursorSpeed;
     }
 
     private void LateUpdate()
