@@ -280,6 +280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 605745403602262792}
   - component: {fileID: 3112879281159730159}
+  - component: {fileID: 6196522441088846763}
   m_Layer: 0
   m_Name: Wheel
   m_TagString: Untagged
@@ -298,7 +299,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2320889417157061173}
   - {fileID: 3966688069437424416}
@@ -317,6 +318,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 809d51abbad90cd4a9978c6355d52c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &6196522441088846763
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954088144924032165}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: fb72730ccfb21b24198d48ff63fd8d0f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &958331665920153428
 GameObject:
   m_ObjectHideFlags: 0
@@ -609,7 +632,7 @@ HingeJoint2D:
   m_BreakAction: 3
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: -0.002210774, y: 1.54}
-  m_ConnectedAnchor: {x: 0.03373057, y: -0.19830228}
+  m_ConnectedAnchor: {x: 0.033730794, y: -0.19830228}
   m_UseConnectedAnchor: 1
   m_UseMotor: 1
   m_Motor:

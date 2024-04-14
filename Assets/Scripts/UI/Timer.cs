@@ -6,7 +6,6 @@ public class Timer : MonoBehaviour
 {
     private float _timeRemaining;
     private bool _timerIsRunning = false;
-    private Action _timerCallback;
     public TextMeshProUGUI timeText;
 
     private void Awake()
@@ -28,7 +27,6 @@ public class Timer : MonoBehaviour
                 Debug.Log("Time has run out!");
                 _timeRemaining = 0;
                 _timerIsRunning = false;
-                _timerCallback?.Invoke();
             }
         }
     }
@@ -46,10 +44,14 @@ public class Timer : MonoBehaviour
         timeText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
-    public void StartTimer(float startTime, Action callback = null)
+    public void StartTimer(float startTime)
     {
         _timerIsRunning = true;
         _timeRemaining = startTime;
-        _timerCallback = callback;
+    }
+
+    public float GetTimeRemaining()
+    {
+        return _timeRemaining;
     }
 }

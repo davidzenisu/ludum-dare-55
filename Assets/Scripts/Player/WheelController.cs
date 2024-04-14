@@ -1,11 +1,18 @@
-using Unity.VisualScripting;
+using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Rendering.Universal;
 
 public class WheelController : MonoBehaviour
 {
+    public GameObject startMenu;
     public GameObject pauseMenu;
+    public GameObject endMenu;
+    public GameObject wheel;
+    public GameObject gameZone;
+    public PentagramSpawn[] pentagramPositions;
+    private PentagramMonitor[] pentagramMonitors = new PentagramMonitor[0];
     public static WheelController Instance { get; private set; }
     public int totalGameLengthSeconds;
     private GameObject _targetWheel;
@@ -17,10 +24,15 @@ public class WheelController : MonoBehaviour
     private Score _scoreBoard;
     private bool _isGameRunning;
 
+    class PentagramMonitor
+    {
+        public PentagramSpawn spawnInfo;
+        public bool hasSpawned;
+        public GameObject pentagram;
+    }
+
     private void Awake()
     {
-        // If there is an instance, and it's not me, delete myself.
-
         if (Instance != null && Instance != this)
         {
             Destroy(this);
@@ -32,6 +44,23 @@ public class WheelController : MonoBehaviour
         addPhysicsRaycaster();
         _timer = FindAnyObjectByType<Timer>();
         _scoreBoard = FindAnyObjectByType<Score>();
+        startMenu?.SetActive(true);
+    }
+
+    private void CreatePentagramMonitors()
+    {
+        foreach (var pentagramMonitor in pentagramMonitors)
+        {
+            if (pentagramMonitor.pentagram == null)
+            {
+                continue;
+            }
+            Destroy(pentagramMonitor.pentagram);
+        }
+        pentagramMonitors = pentagramPositions.Select(p => new PentagramMonitor()
+        {
+            spawnInfo = p
+        }).ToArray();
     }
 
     private void addPhysicsRaycaster()
@@ -45,10 +74,15 @@ public class WheelController : MonoBehaviour
 
     private void Update()
     {
+        if (!_isGameRunning)
+        {
+            return;
+        }
         if (_targetWheelRotator)
         {
             _targetWheelLight?.gameObject.SetActive(!_targetWheelRotator.IsSpinning());
         }
+        ValidateTimer();
     }
 
     public GameObject GetTargetWheel()
@@ -89,6 +123,8 @@ public class WheelController : MonoBehaviour
 
     public void StartGame()
     {
+        CreatePentagramMonitors();
+        Time.timeScale = 1;
         _isGameRunning = true;
         AddScore(_totalScore * -1);
         StartTimer();
@@ -96,7 +132,30 @@ public class WheelController : MonoBehaviour
 
     private void EndGame()
     {
+        Time.timeScale = 0f;
+        _isGameRunning = false;
+        endMenu?.SetActive(true);
+    }
 
+    private void ValidateTimer()
+    {
+        var timeRemaining = _timer?.GetTimeRemaining();
+        if (timeRemaining == null)
+        {
+            return;
+        }
+        if (timeRemaining <= 0)
+        {
+            EndGame();
+            return;
+        }
+        var timeElapsed = totalGameLengthSeconds - timeRemaining;
+        var pentagramSpawns = pentagramMonitors.Where(p => !p.hasSpawned && p.spawnInfo.timeStamp <= timeElapsed).ToList();
+        foreach (var spawn in pentagramSpawns)
+        {
+            spawn.pentagram = SpawnPentagram(new Vector2(spawn.spawnInfo.x, spawn.spawnInfo.y));
+            spawn.hasSpawned = true;
+        }
     }
 
     public void TriggerPause()
@@ -115,4 +174,22 @@ public class WheelController : MonoBehaviour
         }
         _isGameRunning = !_isGameRunning;
     }
+
+    public int GetScore()
+    {
+        return _totalScore;
+    }
+
+    public GameObject SpawnPentagram(Vector2 position)
+    {
+        return Instantiate(wheel, position, new Quaternion(), gameZone.transform);
+    }
+}
+
+[Serializable]
+public struct PentagramSpawn
+{
+    public float x;
+    public float y;
+    public float timeStamp;
 }
